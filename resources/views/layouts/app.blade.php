@@ -40,7 +40,7 @@
 
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="{{ asset('images/logo.png') }}" alt="" />
+                    <img src="{{ asset('images/logo-bk.png') }}" alt="" />
                 </a>
             </div>
 

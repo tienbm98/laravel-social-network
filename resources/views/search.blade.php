@@ -69,11 +69,7 @@
                                                                     <h3 class="name">{{ $user_p->name }}</h3>
                                                                     <p class="profession">
                                                                         {{ '@'.$user_p->username }}
-                                                                        @if($user_p->canSeeProfile(Auth::id()))
-                                                                            <small>{{ Auth::user()->distance($user_p) }}</small>
-                                                                        @else
-                                                                            <small>(Private)</small>
-                                                                        @endif
+                                                                        
                                                                     </p>
                                                                 </a>
                                                             </div>

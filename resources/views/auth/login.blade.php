@@ -2,7 +2,7 @@
     <input type="hidden" value="login" name="tab" />
     {{ csrf_field() }}
 
-    <h2>Connect with around.kim to people!</h2>
+    <h2>INPG15!</h2>
 
 
 
@@ -63,25 +63,6 @@
                 </a>
             </div>
         </div>
-
-
-        <div class="clearfix"></div>
-
-        <div class="sub-title">
-            <hr />
-            <span>or</span>
-        </div>
-
-
-        <div class="form-group">
-            <div class="col-md-8 col-md-offset-2">
-                <button type="submit" class="btn btn-primary btn-facebook">
-                    <i class="fa fa-facebook-square"></i> Connect with Facebook
-                </button>
-            </div>
-        </div>
-
-
 
     </div>
 </form>

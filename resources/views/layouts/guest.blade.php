@@ -19,21 +19,11 @@
 </head>
 <body>
 
-<div class="banner">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                Discover your surroundings. Share your hobbies. Meet new people with manhtien.pro!
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <a href="{{ url('/') }}" class="logo">
-                <img src="{{ asset('images/guest_logo.png') }}" alt="" />
+        <div class="col-md-6" >
+            <a href="{{ url('/') }}" class="logo" style="margin-left: -17px">
+                <img src="{{ asset('images/hust-banner.png') }}" width="150%" />
             </a>
         </div>
 

@@ -2,13 +2,13 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\City;
-use App\Models\Country;
-use App\Models\Hobby;
+// use App\Models\City;
+// use App\Models\Country;
+// use App\Models\Hobby;
 use App\Models\User;
-use App\Models\UserHobby;
-use App\Models\UserLocation;
-use App\Models\UserRelationship;
+// use App\Models\UserHobby;
+// use App\Models\UserLocation;
+// use App\Models\UserRelationship;
 use Auth;
 use DB;
 use Hash;
@@ -61,12 +61,12 @@ class ProfileController extends Controller
         $can_see = ($my_profile)?true:$user->canSeeProfile(Auth::id());
 
 
-        $hobbies = Hobby::all();
-        $relationship = $user->relatives()->with('relative')->where('allow', 1)->get();
-        $relationship2 = $user->relatives2()->with('main')->where('allow', 1)->get();
+        // $hobbies = Hobby::all();
+        // $relationship = $user->relatives()->with('relative')->where('allow', 1)->get();
+        // $relationship2 = $user->relatives2()->with('main')->where('allow', 1)->get();
 
 
-        return view('profile.index', compact('user', 'my_profile', 'wall', 'can_see', 'hobbies', 'relationship', 'relationship2'));
+        return view('profile.index', compact('user', 'my_profile', 'wall', 'can_see'));
     }
 
     public function following(Request $request, $username){
@@ -136,61 +136,61 @@ class ProfileController extends Controller
 
                 $response['code'] = 200;
 
-                if (count($data['map_info']) > 1) {
-                    $find_country = Country::where('shortname', $data['map_info']['country']['short_name'])->first();
-                    $country_id = 0;
-                    if ($find_country) {
-                        $country_id = $find_country->id;
-                    } else {
-                        $country = new Country();
-                        $country->name = $data['map_info']['country']['name'];
-                        $country->shortname = $data['map_info']['country']['short_name'];
-                        if ($country->save()) {
-                            $country_id = $country->id;
-                        }
-                    }
+                // if (count($data['map_info']) > 1) {
+                //     $find_country = Country::where('shortname', $data['map_info']['country']['short_name'])->first();
+                //     $country_id = 0;
+                //     if ($find_country) {
+                //         $country_id = $find_country->id;
+                //     } else {
+                //         $country = new Country();
+                //         $country->name = $data['map_info']['country']['name'];
+                //         $country->shortname = $data['map_info']['country']['short_name'];
+                //         if ($country->save()) {
+                //             $country_id = $country->id;
+                //         }
+                //     }
 
-                    $city_id = 0;
-                    if ($country_id > 0) {
-                        $find_city = City::where('name', $data['map_info']['city']['name'])->where('country_id', $country_id)->first();
-                        if ($find_city) {
-                            $city_id = $find_city->id;
-                        } else {
-                            $city = new City();
-                            $city->name = $data['map_info']['city']['name'];
-                            $city->zip = $data['map_info']['city']['zip'];
-                            $city->country_id = $country_id;
-                            if ($city->save()) {
-                                $city_id = $city->id;
-                            }
-                        }
-                    }
-
-
-                    if ($country_id > 0 && $city_id > 0) {
-
-                        $find_location = UserLocation::where('user_id', $user->id)->first();
+                //     $city_id = 0;
+                //     if ($country_id > 0) {
+                //         $find_city = City::where('name', $data['map_info']['city']['name'])->where('country_id', $country_id)->first();
+                //         if ($find_city) {
+                //             $city_id = $find_city->id;
+                //         } else {
+                //             $city = new City();
+                //             $city->name = $data['map_info']['city']['name'];
+                //             $city->zip = $data['map_info']['city']['zip'];
+                //             $city->country_id = $country_id;
+                //             if ($city->save()) {
+                //                 $city_id = $city->id;
+                //             }
+                //         }
+                //     }
 
 
-                        if (!$find_location) {
+                //     if ($country_id > 0 && $city_id > 0) {
+
+                //         $find_location = UserLocation::where('user_id', $user->id)->first();
 
 
-                            $find_location = new UserLocation();
-                            $find_location->user_id = $user->id;
+                //         if (!$find_location) {
 
 
-                        }
+                //             $find_location = new UserLocation();
+                //             $find_location->user_id = $user->id;
 
 
-                        $find_location->city_id = $city_id;
-                        $find_location->latitud = $data['map_info']['latitude'];
-                        $find_location->longitud = $data['map_info']['longitude'];
-                        $find_location->address = $data['map_info']['address'];
+                //         }
 
-                        $find_location->save();
 
-                    }
-                }
+                //         $find_location->city_id = $city_id;
+                //         $find_location->latitud = $data['map_info']['latitude'];
+                //         $find_location->longitud = $data['map_info']['longitude'];
+                //         $find_location->address = $data['map_info']['address'];
+
+                //         $find_location->save();
+
+                //     }
+                // }
 
             }
 
@@ -200,70 +200,70 @@ class ProfileController extends Controller
         return Response::json($response);
     }
 
-    public function saveHobbies(Request $request, $username){
+    // public function saveHobbies(Request $request, $username){
 
-        if (!$this->secure($username)) return redirect('/404');
-
-
-        $my_hobbies = Auth::user()->hobbies()->get();
+    //     if (!$this->secure($username)) return redirect('/404');
 
 
-        $list = [];
-
-        foreach($request->input('hobbies') as $i => $id){
-            $list[$id] = 1;
-        }
+    //     $my_hobbies = Auth::user()->hobbies()->get();
 
 
+    //     $list = [];
 
-        foreach($my_hobbies as $hobby){
-            $hobby_id = $hobby->hobby_id;
-            if (!array_key_exists($hobby_id, $list)){
-                $deleted = DB::delete('delete from user_hobbies where user_id='.Auth::id().' and hobby_id='.$hobby_id);
-            }
-            unset($list[$hobby_id]);
-        }
+    //     foreach($request->input('hobbies') as $i => $id){
+    //         $list[$id] = 1;
+    //     }
 
 
 
-        foreach($list as $id => $status){
-            $hobby = new UserHobby();
-            $hobby->user_id = Auth::id();
-            $hobby->hobby_id = $id;
-            $hobby->save();
-        }
-
-        $request->session()->flash('alert-success', 'Your hobbies have been successfully updated!');
-
-        return redirect('/'.Auth::user()->username);
-
-    }
-
-    public function saveRelationship(Request $request, $username){
-
-        if (!$this->secure($username)) return redirect('/404');
+    //     foreach($my_hobbies as $hobby){
+    //         $hobby_id = $hobby->hobby_id;
+    //         if (!array_key_exists($hobby_id, $list)){
+    //             $deleted = DB::delete('delete from user_hobbies where user_id='.Auth::id().' and hobby_id='.$hobby_id);
+    //         }
+    //         unset($list[$hobby_id]);
+    //     }
 
 
-        $relationship = $request->input('relation');
-        $person = $request->input('person');
+
+    //     foreach($list as $id => $status){
+    //         $hobby = new UserHobby();
+    //         $hobby->user_id = Auth::id();
+    //         $hobby->hobby_id = $id;
+    //         $hobby->save();
+    //     }
+
+    //     $request->session()->flash('alert-success', 'Your hobbies have been successfully updated!');
+
+    //     return redirect('/'.Auth::user()->username);
+
+    // }
+
+    // public function saveRelationship(Request $request, $username){
+
+    //     if (!$this->secure($username)) return redirect('/404');
 
 
-        $relation = new UserRelationship();
-        $relation->main_user_id = $person;
-        $relation->relation_type = $relationship;
-        $relation->related_user_id = Auth::id();
+    //     $relationship = $request->input('relation');
+    //     $person = $request->input('person');
 
-        if ($relation->save()) {
 
-            $request->session()->flash('alert-success', 'Your relationship have been successfully requested! He/She needs to accept relationship with you to publish.');
+    //     $relation = new UserRelationship();
+    //     $relation->main_user_id = $person;
+    //     $relation->relation_type = $relationship;
+    //     $relation->related_user_id = Auth::id();
 
-        }else{
-            $request->session()->flash('alert-danger', 'Something wents wrong!');
-        }
+    //     if ($relation->save()) {
 
-        return redirect('/'.Auth::user()->username);
+    //         $request->session()->flash('alert-success', 'Your relationship have been successfully requested! He/She needs to accept relationship with you to publish.');
 
-    }
+    //     }else{
+    //         $request->session()->flash('alert-danger', 'Something wents wrong!');
+    //     }
+
+    //     return redirect('/'.Auth::user()->username);
+
+    // }
 
     public function uploadProfilePhoto(Request $request, $username){
 

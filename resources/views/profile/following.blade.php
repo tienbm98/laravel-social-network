@@ -50,11 +50,7 @@
                                                                 <h3 class="name">{{ $relation->following->name }}</h3>
                                                                 <p class="profession">
                                                                     {{ '@'.$relation->following->username }}
-                                                                    @if($relation->following->canSeeProfile(Auth::id()))
-                                                                        <small>{{ Auth::user()->distance($relation->following) }}</small>
-                                                                    @else
-                                                                        <small>(Private)</small>
-                                                                    @endif
+                                                                   
                                                                 </p>
                                                             </a>
                                                         </div>
