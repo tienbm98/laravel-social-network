@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Library\sHelper;
 use DB;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\URL;
 
 class User extends Authenticatable
 {
@@ -34,18 +32,6 @@ class User extends Authenticatable
         'birthday'
     ];
 
-    // public function location(){
-    //     return $this->hasOne('App\Models\UserLocation', 'user_id', 'id');
-    // }
-
-    // public function relatives(){
-    //     return $this->hasMany('App\Models\UserRelationship', 'main_user_id', 'id');
-    // }
-
-    // public function relatives2(){
-    //     return $this->hasMany('App\Models\UserRelationship', 'related_user_id', 'id');
-    // }
-
     public function follower(){
         return $this->hasMany('App\Models\UserFollowing', 'following_user_id', 'id');
     }
@@ -53,10 +39,6 @@ class User extends Authenticatable
     public function following(){
         return $this->hasMany('App\Models\UserFollowing', 'follower_user_id', 'id');
     }
-
-    // public function hobbies(){
-    //     return $this->hasMany('App\Models\UserHobby', 'user_id', 'id');
-    // }
 
     public function posts(){
         return $this->hasMany('App\Models\Post', 'user_id', 'id');
@@ -114,17 +96,6 @@ class User extends Authenticatable
         if ($this->birthday) return date('Y') - $this->birthday->format('Y');
     }
 
-    // public function getLocation(){
-    //     return "";
-    // }
-
-    // public function getAddress(){
-    //     $location = $this->location()->first();
-    //     if ($location){
-    //         return $location->address;
-    //     }
-    // }
-
     public function suggestedPeople($limit = 5, $city_id = null, $hobby_id = null, $all = null){
         $list = User::where('id', '!=', $this->id);
 
@@ -167,35 +138,6 @@ class User extends Authenticatable
         }
         return false;
     }
-
-    // public function distance($user){
-    //     if ($this->id == $user->id) return "";
-    //     if ($user){
-    //         $user_location = $user->location()->get()->first();
-    //         $my_location = $this->location()->get()->first();
-    //         if ($user_location && $my_location){
-    //             return sHelper::distance($my_location->latitud, $my_location->longitud, $user_location->latitud, $user_location->longitud);
-    //         }
-    //     }
-    //     return "";
-    // }
-
-    // public function findNearby(){
-    //     $location = $this->location()->get()->first();
-    //     if (!$location) return false;
-    //     $lat = $location->latitud;
-    //     $long = $location->longitud;
-
-    //     if (empty($lat) || empty($long)) return false;
-
-    //     $raw = '111.045 * DEGREES(ACOS(COS(RADIANS('.$lat.')) * COS(RADIANS(latitud)) * COS(RADIANS(longitud) - RADIANS('.$long.')) + SIN(RADIANS('.$lat.')) * SIN(RADIANS(latitud))))';
-    //     $users = UserLocation::select('user_id', 'latitud', 'longitud', 'address',
-    //         DB::raw($raw.' AS distance'))->with('user')->where('user_id', '!=', $this->id)
-    //         ->havingRaw('distance < 50')->orderBy('distance', 'ASC')->get();
-
-
-    //     return $users;
-    // }
 
     public function messagePeopleList(){
         $list = $this->follower()->where('allow',1)->with('follower')->whereExists(function ($query) {

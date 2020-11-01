@@ -21,6 +21,9 @@ Route::group(['middleware' => 'guest'], function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+//Setting
+
 Route::get('/settings', 'SettingsController@index');
 Route::post('/settings', array(
     'as' => 'settings',
@@ -41,27 +44,11 @@ Route::get('/post/{id}', 'PostsController@single');
 // Search
 Route::get('/search', 'HomeController@search');
 
-
-// // Groups
-// Route::get('/groups', 'GroupController@index');
-// Route::get('/group/{id}', 'GroupController@group');
-// Route::get('/group/{id}/stats', 'GroupController@stats');
-
-
 // Follow
 Route::post('/follow', 'FollowController@follow');
 Route::get('/followers/pending', 'FollowController@pending');
 Route::post('/follower/request', 'FollowController@followerRequest');
 Route::post('/follower/denied', 'FollowController@followDenied');
-
-// // Relatives
-// Route::get('/relatives/pending', 'RelativesController@pending');
-// Route::post('/relative/delete', 'RelativesController@delete');
-// Route::post('/relative/request', 'RelativesController@relativeRequest');
-
-
-// Nearby
-// Route::get('/nearby', 'NearbyController@index');
 
 // Messages
 Route::get('/direct-messages', 'MessagesController@index');
@@ -74,11 +61,6 @@ Route::post('/direct-messages/delete-chat', 'MessagesController@deleteChat');
 Route::post('/direct-messages/delete-message', 'MessagesController@deleteMessage');
 Route::post('/direct-messages/notifications', 'MessagesController@notifications');
 
-// // Find Location
-// Route::get('/find-my-location', 'FindLocationController@index');
-// Route::get('/save-my-location', 'FindLocationController@save');
-// Route::get('/save-my-location2', 'FindLocationController@save2');
-
 // Profile
 Route::get('/{username}', 'ProfileController@index');
 Route::post('/{username}/upload/profile-photo', 'ProfileController@uploadProfilePhoto');
@@ -86,7 +68,3 @@ Route::post('/{username}/upload/cover', 'ProfileController@uploadCover');
 Route::post('/{username}/save/information', 'ProfileController@saveInformation');
 Route::get('/{username}/following', 'ProfileController@following');
 Route::get('/{username}/followers', 'ProfileController@followers');
-Route::post('/{username}/save/hobbies', 'ProfileController@saveHobbies');
-Route::post('/{username}/save/relationship', 'ProfileController@saveRelationship');
-
-

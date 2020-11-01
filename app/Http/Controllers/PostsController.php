@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\PostComment;
@@ -11,22 +10,18 @@ use Auth;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 use Response;
-use Session;
 use View;
-
 
 class PostsController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-
-    public function fetch(Request $request){
+    public function fetch(Request $request)
+    {
         $wall_type = $request->input('wall_type'); // 0 => all posts, 1 => profile posts, 2 => group posts
         $list_type = $request->input('list_type'); // 0 => all, 1 => only text, 2 => only image
         $optional_id = $request->input('optional_id'); // Group ID, User ID, or empty
@@ -74,9 +69,6 @@ class PostsController extends Controller
 
         $posts = $posts->limit($limit)->orderBy('id', 'DESC')->get();
 
-
-
-
         if ($div_location == 'initialize'){
             $div_location = ['top', 'bottom'];
         }else{
@@ -89,10 +81,9 @@ class PostsController extends Controller
         return view('widgets.wall_posts', compact('posts', 'user', 'wall_type', 'list_type', 'optional_id', 'limit', 'div_location', 'comment_count'));
     }
 
-    public function single(Request $request, $id){
-
+    public function single(Request $request, $id)
+    {
         $post = Post::find($id);
-
 
         if (!$post) return redirect('/404');
 
@@ -104,23 +95,18 @@ class PostsController extends Controller
             if (!$can_see) return redirect('/404');
         }
 
-
         $update_all = $post->comments()->where('seen', 0)->update(['seen' => 1]);
         $update_all = $post->likes()->where('seen', 0)->update(['seen' => 1]);
-
-
 
         return view('post', compact('post', 'user', 'comment_count', 'can_see'));
     }
 
-    public function delete(Request $request){
-
+    public function delete(Request $request)
+    {
         $response = array();
         $response['code'] = 400;
 
         $post = Post::find($request->input('id'));
-
-
 
         if ($post){
             if ($post->user_id == Auth::id()) {
@@ -134,8 +120,8 @@ class PostsController extends Controller
     }
 
 
-    public function like(Request $request){
-
+    public function like(Request $request)  // like post
+    {
         $user = Auth::user();
 
         $response = array();
@@ -173,8 +159,8 @@ class PostsController extends Controller
     }
 
 
-    public function comment(Request $request){
-
+    public function comment(Request $request)
+    {
         $user = Auth::user();
 
         $response = array();
@@ -183,11 +169,7 @@ class PostsController extends Controller
         $post = Post::find($request->input('id'));
         $text = $request->input('comment');
 
-
-
         if ($post && !empty($text)){
-
-
             $comment = new PostComment();
             $comment->post_id = $post->id;
             $comment->comment_user_id = $user->id;
@@ -199,19 +181,17 @@ class PostsController extends Controller
                 $html = View::make('widgets.post_detail.comments_title', compact('post', 'comment'));
                 $response['comments_title'] = $html->render();
             }
-
         }
 
         return Response::json($response);
     }
 
-    public function deleteComment(Request $request){
-
+    public function deleteComment(Request $request)
+    {
         $response = array();
         $response['code'] = 400;
 
         $post_comment = PostComment::find($request->input('id'));
-
 
         if ($post_comment){
             $post = $post_comment->post;
@@ -228,8 +208,8 @@ class PostsController extends Controller
     }
 
 
-    public function likes(Request $request){
-
+    public function likes(Request $request)  // đếm like
+    {
         $user = Auth::user();
 
         $response = array();
@@ -246,18 +226,15 @@ class PostsController extends Controller
         return Response::json($response);
     }
 
-
-    public function create(Request $request){
-
+    public function create(Request $request)
+    {
         $data = $request->all();
         $input = json_decode($data['data'], true);
         unset($data['data']);
         foreach ($input as $key => $value) $data[$key] = $value;
 
-
         $response = array();
         $response['code'] = 400;
-
 
         if ($request->hasFile('image')){
             $validator_data['image'] = 'required|mimes:jpeg,jpg,png,gif|max:2048';
@@ -314,13 +291,8 @@ class PostsController extends Controller
                 $response['code'] = 400;
                 $response['message'] = "Something went wrong!";
             }
-
-
         }
 
         return Response::json($response);
-
     }
-
-
 }

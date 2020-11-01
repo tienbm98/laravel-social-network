@@ -1,18 +1,11 @@
 <?php
-/**
- * Created by lvntayn
- * Date: 03/06/2017
- * Time: 22:45
- */
 
 namespace App\Models;
-
 
 use Illuminate\Database\Eloquent\Model;
 
 class UserDirectMessage extends Model
 {
-
     protected $table = 'user_direct_messages';
 
     protected $dates = [
@@ -29,7 +22,6 @@ class UserDirectMessage extends Model
 
     }
 
-
     public function sender(){
         return $this->belongsTo('App\Models\User', 'sender_user_id');
     }
@@ -37,7 +29,4 @@ class UserDirectMessage extends Model
     public function receiver(){
         return $this->belongsTo('App\Models\User', 'receiver_user_id');
     }
-
-
-
 }

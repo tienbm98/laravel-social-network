@@ -2,9 +2,7 @@
     <input type="hidden" value="login" name="tab" />
     {{ csrf_field() }}
 
-    <h2>INPG15!</h2>
-
-
+    <h2>wellcome</h2>
 
     <div class="row">
         <div class="form-group{{ old('tab') != 'register' && $errors->has('email') ? ' has-error' : '' }} col-md-12">

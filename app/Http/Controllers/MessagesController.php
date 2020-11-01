@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -12,7 +11,6 @@ use View;
 
 class MessagesController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,12 +23,12 @@ class MessagesController extends Controller
      */
     public function index($id = null)
     {
-
         $user = Auth::user();
 
         $user_list = $user->messagePeopleList();
 
         $show = false;
+
         if ($id != null){
             $friend = User::find($id);
             if ($friend){
@@ -42,16 +40,14 @@ class MessagesController extends Controller
     }
 
 
-    public function chat(Request $request){
-
+    public function chat(Request $request)
+    {
         $response = array();
         $response['code'] = 400;
 
         $friend = User::find($request->input('id'));
 
         $user = Auth::user();
-
-
 
         if ($friend){
             $response['code'] = 200;
@@ -79,8 +75,8 @@ class MessagesController extends Controller
         return Response::json($response);
     }
 
-    public function peopleList(Request $request){
-
+    public function peopleList(Request $request)
+    {
         $response = array();
         $response['code'] = 200;
 
@@ -90,7 +86,6 @@ class MessagesController extends Controller
 
         $user_list = [];
 
-
         $message_list = DB::select( DB::raw("select * from (select * from `user_direct_messages` where ((`sender_user_id` = '".$user->id."' and `sender_delete` = '0') or (`receiver_user_id` = '".$user->id."' and `receiver_delete` = '0')) order by `id` desc limit 200000) as group_table group by receiver_user_id, receiver_user_id order by id desc") );
 
         $new_list = [];
@@ -99,7 +94,6 @@ class MessagesController extends Controller
             $msg->dataImport($list);
             $new_list[] = $msg;
         }
-
 
         foreach (array_reverse($new_list) as $message){
             if ($message->sender_user_id == $user->id){
@@ -119,23 +113,20 @@ class MessagesController extends Controller
             }
         }
 
-
         $html = View::make('messages.widgets.people_list', compact('user', 'active_user_id', 'user_list'));
         $response['html'] = $html->render();
 
         return Response::json($response);
-
     }
 
-    public function notifications(Request $request){
+    public function notifications(Request $request)
+    {
         $response = array();
         $response['code'] = 200;
 
         $user = Auth::user();
 
-
         $user_list = [];
-
 
         $message_list = DB::select( DB::raw("select * from (select * from `user_direct_messages` where `receiver_user_id` = '".$user->id."' and `receiver_delete` = '0'  and `seen` = '0' order by `id` desc limit 200000) as group_table group by sender_user_id order by id desc") );
 
@@ -146,8 +137,6 @@ class MessagesController extends Controller
             $new_list[] = $msg;
         }
 
-
-
         foreach (array_reverse($new_list) as $message){
             $user_list[$message->sender_user_id] = [
                 'new' => ($message->seen == 0)?true:false,
@@ -156,22 +145,20 @@ class MessagesController extends Controller
             ];
         }
 
-
         $html = View::make('messages.widgets.notifications', compact('user', 'user_list'));
         $response['html'] = $html->render();
 
         return Response::json($response);
     }
 
-    public function deleteChat(Request $request){
+    public function deleteChat(Request $request)
+    {
         $response = array();
         $response['code'] = 400;
 
         $friend = User::find($request->input('id'));
 
         $user = Auth::user();
-
-
 
         if ($friend){
             $response['code'] = 200;
@@ -180,23 +167,19 @@ class MessagesController extends Controller
                 ->where('receiver_user_id', $user->id)->where('sender_user_id', $friend->id)->update(['receiver_delete' => 1]);
             $update_all = UserDirectMessage::where('sender_delete', 0)
                 ->where('sender_user_id', $user->id)->where('receiver_user_id', $friend->id)->update(['sender_delete' => 1]);
-
-
         }
 
         return Response::json($response);
     }
 
-
-    public function deleteMessage(Request $request){
+    public function deleteMessage(Request $request)
+    {
         $response = array();
         $response['code'] = 400;
 
         $message = UserDirectMessage::find($request->input('id'));
 
         $user = Auth::user();
-
-
 
         if ($message){
             $response['code'] = 200;
@@ -210,16 +193,14 @@ class MessagesController extends Controller
             if ($message->save()){
                 $response['code'] = 200;
             }
-
-
         }
 
         return Response::json($response);
     }
 
 
-    public function newMessages(Request $request){
-
+    public function newMessages(Request $request)
+    {
         $response = array();
         $response['code'] = 400;
 
@@ -233,12 +214,7 @@ class MessagesController extends Controller
             $message_list = UserDirectMessage::where('receiver_delete', 0)
                 ->where('receiver_user_id', $user->id)->where('sender_user_id', $friend->id)->where('seen', '0')->orderBy('id', 'DESC')->limit(20);
 
-
-
             if ($message_list->count() > 0) {
-
-
-
                 $response['find'] = 1;
                 $html = View::make('messages.widgets.new_messages', compact('user', 'friend', 'message_list'));
                 $response['html'] = $html->render();
@@ -253,8 +229,8 @@ class MessagesController extends Controller
         return Response::json($response);
     }
 
-    public function send(Request $request){
-
+    public function send(Request $request)
+    {
         $response = array();
         $response['code'] = 400;
 
@@ -277,5 +253,4 @@ class MessagesController extends Controller
 
         return Response::json($response);
     }
-
 }

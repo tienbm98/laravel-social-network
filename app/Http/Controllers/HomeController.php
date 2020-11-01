@@ -2,21 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Library\IPAPI;
-use App\Library\sHelper;
-use App\Models\Group;
-use App\Models\Hobby;
 use App\Models\Post;
 use App\Models\User;
 use DB;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
 class HomeController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
@@ -36,25 +30,16 @@ class HomeController extends Controller
             'new_post_group_id' => 0
         ];
 
-
-
-
-
         return view('home', compact('user', 'wall'));
-
-
     }
 
-
-    public function search(Request $request){
-
-
+    public function search(Request $request)
+    {
         $s = $request->input('s');
         if (empty($s)) return redirect('/');
 
-
         $user = Auth::user();
-
+        
         $posts = Post::leftJoin('users', 'users.id', '=', 'posts.user_id')
             ->where(function($query) use ($user) {
 
@@ -76,10 +61,5 @@ class HomeController extends Controller
         $users = User::where('name', 'like', '%'.$s.'%')->orWhere('username', 'like', '%'.$s.'%')->orderBy('name', 'ASC')->get();
 
         return view('search', compact('users', 'posts', 'user', 'comment_count'));
-
     }
-
-
-
-
 }
